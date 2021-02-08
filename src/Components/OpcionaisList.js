@@ -79,7 +79,7 @@ const OpcionaisList = () => {
 
             {myState.state.cardapio.options.length>0?
             <Row>
-                {myState.state.cardapio.options.map((item,indx)=>(
+                {myState.state.cardapio.options.map((item)=>(
                     <Col span='12' style={{paddingBottom:'30px'}}>
                         <Row>
                             <Col>

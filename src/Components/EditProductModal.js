@@ -49,7 +49,7 @@ const EditProductModal = ({
         form
           .validateFields()
           .then(values => {
-            onOk(values,initialValues.id);
+            onOk(values,initialValues);
           })
           .catch(info => {
           });
