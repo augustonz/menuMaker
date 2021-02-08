@@ -1,0 +1,67 @@
+.test.ant-menu-item {
+    height:18vh;
+    display: flex;
+    flex-direction: column;
+    font-size: large;
+    justify-content:center;
+    align-items:center;
+    padding-right:24px;
+}
+
+.ant-list-header {
+    background-color: #cccccc;
+}
+
+.test.big {
+    padding-top: 40px;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 64px;
+    background-color:#47b3f7;
+}
+
+.pageHeader {
+    background-color: #47b3f7;
+    height: 20vh;
+}
+
+.radio {
+    display: block;
+    height: 30px;
+    line-height: 30px;
+}
+.color.ant-btn {
+    background-color: #47b3f7;
+    border-color:  #47b3f7;
+}
+
+span.color {
+    color:  #47b3f7;
+}
+
+h1.color{
+    color: #47b3f7;
+}
+.ant-menu .ant-menu-item-divider {
+    background-color: #47b3f7;
+}
+
+.ant-layout-sider-trigger {
+    background-color: #47b3f7;
+}
+
+.ant-tooltip-inner {
+    color: #47b3f7;
+}
+
+.sider {
+    overflow: auto;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    background-color:white;
+}
