@@ -45,7 +45,6 @@ const ProdutosList = () =>{
     }
 
     const handleNewOk = (values) =>{
-        console.log(values);
         let product={
             id:0,
             name:values.nome,
@@ -94,7 +93,6 @@ const ProdutosList = () =>{
             product.prices=values.prices;
         }
         myState.editProduct(group.id,product);
-        console.log(product.id);
         setModalEditVisibility(false);
     }
 

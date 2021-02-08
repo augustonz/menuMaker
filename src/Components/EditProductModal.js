@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { Modal, Form,Input,Radio,Button,Space} from 'antd';
 import {DeleteOutlined,PlusOutlined} from '@ant-design/icons';
 
@@ -14,28 +14,33 @@ const EditProductModal = ({
   const [priceType,setPriceType] = useState(1);
   const [form] = Form.useForm();
 
-    if (form.getFieldsValue().nome===undefined){
-        form.setFieldsValue({nome:initialValues.name});
-    }
-
-    if (form.getFieldsValue().descricao===undefined){
-        form.setFieldsValue({descricao:initialValues.desc});
-    }
-    
-    if (initialValues.prices){
-        if (initialValues.prices.length>1){
-            form.setFieldsValue({
-                prices:initialValues.prices,
-                price:''
-            })
-        } else {
-            form.setFieldsValue({
-                price:initialValues.prices[0].val,
-                prices:[{info:'',val:''}]
-            })
+  const func = useEffect(()=>{
+      if (visible){
+        if (form.getFieldsValue().nome===undefined){
+            form.setFieldsValue({nome:initialValues.name});
         }
-    }
     
+        if (form.getFieldsValue().descricao===undefined){
+            form.setFieldsValue({descricao:initialValues.desc});
+        }
+    
+        if (initialValues.prices){
+            if (initialValues.prices.length>1){
+                setPriceType(2);
+                form.setFieldsValue({
+                    prices:initialValues.prices,
+                    price:''
+                })
+            } else {
+                setPriceType(1);
+                form.setFieldsValue({
+                    price:initialValues.prices[0].val,
+                    prices:[{info:'',val:''}]
+                })
+            }
+        }
+      }
+  },[visible])
   
   return (
     <Modal
@@ -44,11 +49,13 @@ const EditProductModal = ({
       okText='Editar'
       cancelText='Cancelar'
       onCancel={()=>{
-            onCancel()}}
+        form.resetFields();
+        onCancel()}}
       onOk={() => {
         form
           .validateFields()
           .then(values => {
+            form.resetFields();
             onOk(values,initialValues);
           })
           .catch(info => {
