@@ -74,12 +74,12 @@ const ProdutosList = () =>{
         setModalEditVisibility(true);
     }
 
-    const handleEditOk = (values,id) =>{
+    const handleEditOk = (values,initial) =>{
         let product={
-            id:id,
+            id:initial.id,
             name:values.nome,
             desc:values.descricao,
-            imgSrc:'',
+            imgSrc:initial.imgSrc,
             options:[]
         }
         if (values.descricao===undefined){
@@ -94,6 +94,7 @@ const ProdutosList = () =>{
             product.prices=values.prices;
         }
         myState.editProduct(group.id,product);
+        console.log(product.id);
         setModalEditVisibility(false);
     }
 
