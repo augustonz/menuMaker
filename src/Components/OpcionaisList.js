@@ -99,7 +99,7 @@ const OpcionaisList = () => {
                     </Col>
                 ))}
             </Row>
-            :<h3>Clique no botão acima para criar um opções para produtos</h3>}
+            :<h3>Clique no botão acima para criar opções para os produtos</h3>}
         </>
     );
 }
