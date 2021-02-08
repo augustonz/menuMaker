@@ -15,7 +15,7 @@ class MenuContextProvider extends Component{
         cardapio:{grupos:[{id:1,name:'Açaís',products:[
             {id:1,name:'Produto 1',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.50}],options:[1]}
         ,{id:2,name:'Produto 2',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.00}]}],options:[2]}
-        ,{id:2,name:'Milkshakes',products:[]}],options:[{id:1,title:'Qual sabor?',req:false,max:10,possibil:[{name:'Morango',add:1.00},{name:'Chocolate',add:0.00}]},{id:2,title:'Adicionar queijo?',min:0,max:5,possibil:[{},{}]}]}
+        ,{id:2,name:'Milkshakes',products:[]}],options:[{id:1,title:'Qual sabor?',req:false,max:10,possibil:[{name:'Morango',add:1.00},{name:'Chocolate',add:0.00}]},{id:2,title:'Adicionar queijo?',min:0,max:5,possibil:[{name:'sim',add:1.00},{name:'não',add:0.00}]}]}
     }
 
     componentWillMount = () => {
