@@ -1,14 +1,13 @@
-import React,{useContext,useState} from 'react';
+import React,{useContext,useEffect,useState} from 'react';
 
 import {Row,Col,Checkbox} from 'antd'
 import {MenuContext} from '../contexts/ThemeContext'
 
 
-const Opcoes = ({opcoesIds}) => {
+const Opcoes = ({opcoesIds,onOk}) => {
 
     const myState=useContext(MenuContext);
     const listaOpcoes = myState.findOptionsById(opcoesIds);
-    const [finalResp,setFinalResp] = useState('[]');
     const [listas,setListas] = useState(()=>{
         let list=[]
         for (let i=0;i<opcoesIds.length;i++){
@@ -16,7 +15,11 @@ const Opcoes = ({opcoesIds}) => {
         }
         return list;
     });
-    console.log(listas);
+
+    useEffect(()=>{
+        onOk(listas)
+    },[listas]);
+
     return (
         <>
             {listaOpcoes.map((opcoes,index)=>{
@@ -40,23 +43,32 @@ const Opcoes = ({opcoesIds}) => {
                 }
                 return(
                 <>
-                    <h1 style={{display:'inline'}}>{opcoes.title}</h1>
-                    <h3 style={{paddingLeft:'20px',display:'inline'}}>Máximo: <span style={{color:'#47b3f7'}}>{opcoes.max}</span></h3>
+                    <Row align='middle'>
+                        <Col span='16'>
+                            <h1>{opcoes.title}</h1>
+                        </Col>
+                        {opcoes.req?
+                        <Col>
+                            <h3>(Obrigatório)</h3>
+                        </Col>
+                    :null}
+                    </Row>
+                    <h3>Máximo: <span style={{color:'#47b3f7'}}>{opcoes.max}</span></h3>
 
                     <Checkbox.Group style={{width:'100%'}}
                     value={listas[index]}>
                         {opcoes.possibil.map((item)=>(
-                            <Row>
+                            <Row align='middle'>
                                 <Col span='10'>
                                     <h3>{item.name}</h3>
                                 </Col>
                                 <Col span='10'>
-                                    <h3>{item.add}</h3>
+                                    <h3 style={{fontWeight:'bold',marginLeft:'5px'}} className='color'>+R${String(item.add.toFixed(2)).replace('.',',')}</h3>
                                 </Col>
                                 <Col>
                                     <Checkbox value={JSON.stringify([item.name,item.add])} onClick={opcoes.max!==1?e=>handleMult(e):e=>{
                                         let newArr=listas;
-                                        newArr[index]=[e.target.value];
+                                        newArr[index]=e.target.value;
                                         setListas([...newArr]);
                                         
                                     }}/>
