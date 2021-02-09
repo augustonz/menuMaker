@@ -8,9 +8,8 @@ import Relatorios from './views/Relatorios';
 import Configuracoes from './views/Configuracoes';
 import Sobre from './views/Sobre';
 import Detalhes from './views/Detalhes';
-
+import Pedido from './views/Pedido.js';
 import MenuContextProvider from './contexts/ThemeContext';
-
 import './App.css'
 function App() {
 
@@ -39,6 +38,9 @@ function App() {
             </Route>
             <Route path='/produto/:id'>
               <Detalhes/>
+            </Route>
+            <Route path='/carrinho'>
+              <Pedido/>
             </Route>
           </Switch>
         </Router>
