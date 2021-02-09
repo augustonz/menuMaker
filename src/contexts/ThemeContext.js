@@ -12,6 +12,7 @@ class MenuContextProvider extends Component{
         groupId:3,
         productId:3,
         optionsId:3,
+        carrinho:[],
         cardapio:{grupos:[{id:1,name:'Açaís',products:[
             {id:1,name:'Produto 1',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.50}],options:[1]}
         ,{id:2,name:'Produto 2',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.00}]}],options:[2]}
@@ -207,6 +208,24 @@ class MenuContextProvider extends Component{
         return ids;
     }
 
+    addProdutoCarrinhoHandler = (unit) => {
+        let newArr=this.state.carrinho;
+        newArr.push(unit);
+        this.setState({
+            carrinho:newArr
+        });
+        this.storeState();
+    }
+
+    removeProdutoCarrinhoHandler = () => {
+        let newArr=this.state.carrinho;
+        newArr.pop();
+        this.setState({
+            carrinho:newArr
+        });
+        this.storeState();
+    }
+
     render(){
         return(
             <MenuContext.Provider value={{state:this.state,
@@ -223,7 +242,9 @@ class MenuContextProvider extends Component{
             delOption:this.deleteOptionHandler,
             findProductById:this.findProductByIdHandler,
             findOptionsById:this.findOptionsByIdHandler,
-            getOpcoesIds:this.getOpcoesIdsHandler}}>
+            getOpcoesIds:this.getOpcoesIdsHandler,
+            addProdutoCarrinho:this.addProdutoCarrinhoHandler,
+            removeProdutoCarrinho:this.removeProdutoCarrinhoHandler}}>
                 {this.props.children}
             </MenuContext.Provider>
         );
