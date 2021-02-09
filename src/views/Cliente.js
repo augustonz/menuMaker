@@ -1,8 +1,8 @@
 import React,{useContext} from 'react';
 
 import {useHistory} from 'react-router-dom';
-import {Row,Col,Layout,Image,Button, Affix} from 'antd';
-import {RightOutlined} from '@ant-design/icons';
+import {Row,Col,Layout,Image,Button, Affix,Badge} from 'antd';
+import {RightOutlined, ShoppingCartOutlined} from '@ant-design/icons';
 
 import {MenuContext} from '../contexts/ThemeContext';
 import Menu from '../Components/Menu';
@@ -41,6 +41,19 @@ const Cliente = () => {
                     verificar preço de entrega (outra tela ou modal?)
                     */}
                     <Menu/>
+                    <Affix offsetBottom={0}>
+                        <Row justify='start' align='middle' style={{backgroundColor:'#333333',color:'white',width:'100vw',height:'8vh'}}
+                        onClick={()=>history.push('/carrinho')}>
+                            <Col offset='2' style={{paddingTop:'1vh'}}>
+                                <Badge count={myState.state.carrinho.length} showZero={true} size='small'>
+                                    <ShoppingCartOutlined style={{fontSize:'4vh',color:'white'}}/>
+                                </Badge> 
+                            </Col>
+                            <Col offset='4'>
+                                <h1 style={{color:'white',lineHeight:'8vh',margin:'0'}}>Meu Carrinho</h1>
+                            </Col>
+                        </Row>
+                    </Affix>
                 </Content>
             </Layout>
         </>
