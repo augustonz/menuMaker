@@ -7,7 +7,7 @@ import NewGroupModal from './NewGroupModal';
 import EditGroupModal from './EditGroupModal';
 const {confirm} = Modal;
 
-const GroupsList= ()=>{
+const GroupsList= ({groupSetter})=>{
 
     const myState=useContext(MenuContext);
     const [editItem,setEditItem]=useState({});
@@ -77,7 +77,7 @@ const GroupsList= ()=>{
             itemLayout='horizontal' 
             dataSource={myState.state.cardapio.grupos}
             renderItem={item=>(
-                <List.Item onClick={()=>myState.selectGroup(item)} style={{backgroundColor:'white'}} key={item.id}  
+                <List.Item onClick={()=>groupSetter(item)} style={{backgroundColor:'white'}} key={item.id}  
                 actions={[<Tooltip title='editar' color='white'><Button shape='circle' onClick={event=>{event.stopPropagation();event.nativeEvent.stopImmediatePropagation();editGroup(item)}} icon={<EditOutlined />}/></Tooltip>,
                 <Tooltip title='excluir' color='white'><Button shape='circle' danger onClick={event=>{event.stopPropagation();event.nativeEvent.stopImmediatePropagation();delGroup(item.id)}} icon={<DeleteOutlined />}/></Tooltip>]}>
                     <List.Item.Meta title={item.name} description={'Produtos: '+item.products.length} />

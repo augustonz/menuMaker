@@ -1,4 +1,4 @@
-import React,{useContext} from 'react';
+import React,{useContext,useState} from 'react';
 
 import {useHistory} from 'react-router-dom';
 import {Row,Col,Layout,Image,Button, Affix,Badge} from 'antd';
@@ -11,7 +11,6 @@ const {Header,Content} = Layout;
 const Cliente = () => {
 
     const myState = useContext(MenuContext);
-
     const history=useHistory();
     const handleClick = (event) =>{
         history.push('/sobre');
@@ -35,16 +34,18 @@ const Cliente = () => {
                         </Col>
                     </Row> 
                 </Header>
+                
                 <Content style={{backgroundColor:'#cccccc'}}>
                     {/*
                     Informação basica Fechado ou nao
                     verificar preço de entrega (outra tela ou modal?)
+                    anchor?
                     */}
                     <Menu/>
                     <Affix offsetBottom={0}>
                         <Row justify='start' align='middle' style={{backgroundColor:'#333333',color:'white',width:'100vw',height:'8vh'}}
                         onClick={()=>history.push('/carrinho')}>
-                            <Col offset='2' style={{paddingTop:'1vh'}}>
+                            <Col offset='1'  style={{paddingTop:'1vh'}}>
                                 <Badge count={myState.state.carrinho.length} showZero={true} size='small'>
                                     <ShoppingCartOutlined style={{fontSize:'4vh',color:'white'}}/>
                                 </Badge> 

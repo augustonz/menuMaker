@@ -6,9 +6,6 @@ class MenuContextProvider extends Component{
     state = {
         storeInfo:{address:'',description:'',name:'',storeCode:'',hellomessage:'',openTime:''},
         collapsed:false,
-        mainGroup:{id:1,name:'Açaís',products:[
-            {id:1,name:'Produto 1',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.50}],options:[1]}
-        ,{id:2,name:'Produto 2',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.00}]}]},
         groupId:3,
         productId:3,
         optionsId:3,
@@ -38,7 +35,7 @@ class MenuContextProvider extends Component{
             groupId:this.state.groupId+1
         })
         let Grupos=this.state.cardapio.grupos;
-        Grupos.unshift(group)
+        Grupos.unshift(group);
         this.setState({
             cardapio:{grupos:Grupos,options:this.state.cardapio.options}
         })
@@ -63,24 +60,12 @@ class MenuContextProvider extends Component{
             return x.id;
           }).indexOf(Id);
         newArr.splice(index,1);
-        if (this.state.mainGroup.id===Id){
-            this.setState({
-                mainGroup:this.state.cardapio.grupos[0]
-            })
-        }
         this.setState({
             cardapio:{grupos:newArr,options:this.state.cardapio.options}
         })
         this.storeState();
     }
     
-    selectGroupHandler = (grupo) =>{
-        this.setState({
-            mainGroup:grupo
-        })
-        this.storeState();
-    }
-
     newProductHandler = (grupoId,produto) => {
         produto.id=this.state.productId;
         this.setState({
@@ -94,7 +79,6 @@ class MenuContextProvider extends Component{
         Grupos[indexGrupo].products.unshift(produto);
         this.setState({
             cardapio:{grupos:Grupos,options:this.state.cardapio.options},
-            mainGroup:{id:this.state.mainGroup.id,name:this.state.mainGroup.name,products:Grupos[indexGrupo].products}
         })
         this.storeState();
     }
@@ -112,26 +96,25 @@ class MenuContextProvider extends Component{
         Grupos[indexGrupo].products[indexProduto]=produto;
         this.setState({
             cardapio:{grupos:Grupos,options:this.state.cardapio.options},
-            mainGroup:{id:this.state.mainGroup.id,name:this.state.mainGroup.name,products:Grupos[indexGrupo].products}
         })
         this.storeState();
     }
 
-    deleteProductHandler = (Id) => {
-        let newArr=this.state.mainGroup.products;
+    deleteProductHandler = (grupoId,Id) => {
+        let Grupos=this.state.cardapio.grupos;
+        var indexGrupo = Grupos.map(x => {
+            return x.id;
+        }).indexOf(grupoId);
+
+        let newArr=this.state.cardapio.grupos[indexGrupo].products;
         var index = newArr.map(x => {
             return x.id;
         }).indexOf(Id);
         newArr.splice(index,1);
 
-        let Grupos=this.state.cardapio.grupos;
-        var indexGrupo = Grupos.map(x => {
-            return x.id;
-        }).indexOf(this.state.mainGroup.id);
         Grupos[indexGrupo].products=newArr;
         this.setState({
             cardapio:{grupos:Grupos,options:this.state.cardapio.options},
-            mainGroup:{id:this.state.mainGroup.id,name:this.state.mainGroup.name,products:newArr}
         })
         this.storeState();
     }
@@ -233,7 +216,6 @@ class MenuContextProvider extends Component{
             newGroup:this.newGroupHandler,
             editGroup:this.editGroupHandler,
             deleteGroup:this.deleteGroupHandler,
-            selectGroup:this.selectGroupHandler,
             newProduct:this.newProductHandler,
             editProduct:this.editProductHandler,
             delProduct:this.deleteProductHandler,

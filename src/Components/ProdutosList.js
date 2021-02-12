@@ -10,7 +10,7 @@ import {MenuContext} from '../contexts/ThemeContext';
 
 const {confirm} = Modal;
 
-const ProdutosList = () =>{
+const ProdutosList = ({Group}) =>{
 
     const myState=useContext(MenuContext);
     const [editItem,setEditItem] = useState({});
@@ -18,8 +18,8 @@ const ProdutosList = () =>{
     const [isModalEditVisible,setModalEditVisibility]=useState(false);
     const [isModalOptionVisible,setModalOptionVisibility]=useState(false);
     
-    const group=myState.state.mainGroup;
-    
+    const group=Group;
+
     const ShowProducts = group?group.products.map((item,index) => (
         <Row key={index} style={{paddingTop:'8px', backgroundColor:'white',marginLeft:'24px',marginBottom:'1px',minHeight:'15vh',alignContent:'center'}}>
             <Col span='4'><Image style={{padding:0}} preview={false} src={item.imgSrc} width='80px' /></Col>
@@ -106,7 +106,7 @@ const ProdutosList = () =>{
             cancelText: 'Não',
             closable:true,
             onOk() {
-              myState.delProduct(id);
+              myState.delProduct(group.id,id);
             },
             onCancel() {
             },
@@ -136,15 +136,11 @@ const ProdutosList = () =>{
             <NewProductModal
             visible={isModalNewVisible} 
             onOk={handleNewOk} 
-            onCancel={() => {setModalNewVisibility(false)}}
-            grupos={myState.state.cardapio.grupos}
-            mainGroup={group}/>
+            onCancel={() => {setModalNewVisibility(false)}}/>
 
             <EditProductModal
             initialValues={editItem}
             visible={isModalEditVisible}
-            grupos={myState.state.cardapio.grupos}
-            mainGroup={group} 
             onOk={handleEditOk} 
             onCancel={() => {setModalEditVisibility(false)}}/>
             
