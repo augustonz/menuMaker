@@ -1,60 +1,82 @@
-import React,{useContext,useState} from 'react';
-import {Row,Col,Tooltip,Button,List} from 'antd';
+import React,{useState,useEffect} from 'react';
+import {Row,Col,Tooltip,Button} from 'antd';
 import {PlusOutlined,EditOutlined,DeleteOutlined} from '@ant-design/icons';
+import axios from 'axios';
 
 import NewOptionModal from './NewOptionModal';
 import EditOptionModal from './EditOptionModal';
 
-import {MenuContext} from '../contexts/ThemeContext'
 const OpcionaisList = () => {
-    
-    const myState=useContext(MenuContext);
+
     const [isModalNewVisible,setModalNewVisibility]=useState(false);
     const [isModalEditVisible,setModalEditVisibility]=useState(false);
     const [editItem,setEditItem]=useState({});
+    const [opcoes,setOpcoes] = useState([]);
+
+    function refreshList() {
+        axios.get('https://augustomenumaker.herokuapp.com/opcao').then(res=>{
+            setOpcoes(res.data);
+        })
+        .catch(err=>console.log(err));
+    }
+
+    useEffect(()=>{
+        refreshList();
+    },[])
+
     const newOption = () => {
         setModalNewVisibility(true);
     }
 
     const handleNewOk = (values) => {
-        console.log(values);
         if (values.req===undefined){
             values.req=false;
         }
         let option = {
-            id:0,
             title:values.title,
             req:values.req,
             max:Number(values.max),
             possibil:values.possibil
         }
-        myState.newOption(option);
+        axios.post('https://augustomenumaker.herokuapp.com/opcao/add',option).then(res=>{
+            refreshList();
+        })
+        .catch(err=>console.log(err));
+        //myState.newOption(option);
         setModalNewVisibility(false);
     }
 
-    const editOption = (option) => {
-        setEditItem(option);
+    const editOption = (opcao) => {
+        setEditItem(opcao);
         setModalEditVisibility(true);
     }
 
     const handleEditOk = (values) => {
-        console.log(values);
+
         if (values.req===undefined){
             values.req=false;
         }
         let option = {
-            id:editItem.id,
             title:values.title,
             req:values.req,
             max:Number(values.max),
             possibil:values.possibil
         }
-        myState.editOption(option);
+        console.log(values);
+        axios.post('https://augustomenumaker.herokuapp.com/opcao/update/'+editItem._id,option).then(res=>{
+            refreshList();
+        })
+        .catch(err=>console.log(err));
+        //myState.editOption(option);
         setModalEditVisibility(false);
     }
 
     const delOption = (id) => {
-        myState.delOption(id);
+        axios.delete('https://augustomenumaker.herokuapp.com/opcao/'+id).then(res=>{
+        refreshList();
+        })
+        .catch(err=>console.log(err));
+        //myState.delOption(id);
     }
 
     return (
@@ -77,9 +99,9 @@ const OpcionaisList = () => {
                 <Col><h1>Opcionais</h1></Col>
             </Row>
 
-            {myState.state.cardapio.options.length>0?
+            {opcoes.length>0?
             <Row>
-                {myState.state.cardapio.options.map((item)=>(
+                {opcoes.map((item)=>(
                     <Col span='12' style={{paddingBottom:'30px'}}>
                         <Row>
                             <Col>
@@ -93,7 +115,7 @@ const OpcionaisList = () => {
                             </Col>
                             <Col style={{paddingTop:'15px',paddingLeft:'15px'}}>
                                 <Tooltip title='editar' color='white'><Button style={{marginRight:15}} shape='circle' onClick={()=>editOption(item)} icon={<EditOutlined />}/></Tooltip>
-                                <Tooltip title='excluir' color='white'><Button shape='circle' danger onClick={()=>delOption(item.id)} icon={<DeleteOutlined />}/></Tooltip>
+                                <Tooltip title='excluir' color='white'><Button shape='circle' danger onClick={()=>delOption(item._id)} icon={<DeleteOutlined />}/></Tooltip>
                             </Col>
                         </Row>
                     </Col>

@@ -1,22 +1,23 @@
-import React,{useState,useContext,useEffect} from 'react';
+import React,{useState,useEffect} from 'react';
 import {Modal,Checkbox,Row,Col} from 'antd';
-import {MenuContext} from '../contexts/ThemeContext'
+import axios from 'axios';
 
 const AddOptionModal = (
-    {opcoesIds,
+    {
     visible,
     onCancel,
     onOk,
     selectedIds}) => {
-    const myState=useContext(MenuContext);
-    const listaOpcoes = myState.findOptionsById(opcoesIds);
+    const [listaOpcoes,setListaOpcoes] = useState([]);
     const [listaSelec,setListaSelec] = useState(selectedIds);
     function onChange(changeValues) {
         setListaSelec(changeValues);
     }
 
-    const func = useEffect(()=>{
+    useEffect(()=>{
         if (visible){
+            axios.get('https://augustomenumaker.herokuapp.com/opcao/').then(res=>setListaOpcoes(res.data))
+            .catch(err=>console.log(err));
             setListaSelec(selectedIds);
         } else {
             setListaSelec([]);
@@ -27,7 +28,7 @@ const AddOptionModal = (
         <>
             <Modal
             visible={visible}
-            title='Editar grupo'
+            title='Adicionar opções'
             okText='Confirmar'
             cancelText='Cancelar'
             onCancel={onCancel}
@@ -39,7 +40,7 @@ const AddOptionModal = (
                         <Col span='12'>
                             <Row align='middle'>
                                 <Col style={{margin:'auto 0'}}>
-                                    <Checkbox value={opcoes.id}></Checkbox>
+                                    <Checkbox value={opcoes._id}></Checkbox>
                                 </Col>
                                 <Col style={{marginLeft:'15px'}}>
                                     <h1>{opcoes.title}</h1>

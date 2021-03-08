@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Modal, Form,Input,Button,Checkbox,Space,Row,Col} from 'antd';
 import {DeleteOutlined,PlusOutlined} from '@ant-design/icons'
 
@@ -8,22 +8,17 @@ const EditOptionModal = ({
   onOk,
   onCancel,
 }) => {
-  const [form] = Form.useForm();
-
-    if (form.getFieldsValue().title===undefined){
-        form.setFieldsValue({title:initialValues.title});
-    }
-
-    if (form.getFieldsValue().req===undefined){
-        form.setFieldsValue({req:initialValues.req});
-    }
-
-    if (form.getFieldsValue().max===undefined){
-        form.setFieldsValue({max:initialValues.max});
-    }
-    form.setFieldsValue({possibil:initialValues.possibil});
-
     
+    const [form] = Form.useForm();
+    useEffect(()=>{
+        if (visible){
+            form.setFieldsValue({title:initialValues.title});
+            form.setFieldsValue({req:initialValues.req});
+            form.setFieldsValue({max:initialValues.max});
+            form.setFieldsValue({possibil:initialValues.possibil});
+        }
+    },[visible]);
+
   return (
     <Modal
       visible={visible}
@@ -35,6 +30,7 @@ const EditOptionModal = ({
         form
           .validateFields()
           .then(values => {
+              values._id=initialValues._id;
               for (var i in values.possibil){
                   values.possibil[i].add=Number(values.possibil[i].add);
               }
@@ -96,7 +92,7 @@ const EditOptionModal = ({
                             {...field}
                             name={[field.name, 'add']}
                             fieldKey={[field.fieldKey, 'add']}
-                            rules={[{ required: true, message: 'Informe o calor adicional' }]}
+                            rules={[{ required: true, message: 'Informe o valor adicional' }]}
                             >
                                 <Input placeholder="R$0.00" type='number' />
                             </Form.Item>

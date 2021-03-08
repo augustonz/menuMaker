@@ -1,6 +1,7 @@
-import React,{useContext, useEffect,useState} from 'react';
+import React,{useEffect,useState,useContext} from 'react';
+import axios from 'axios';
 import {Layout,Row,Col,Divider,Button, Affix,Checkbox,message} from 'antd';
-import {LeftOutlined,RightOutlined,ShoppingCartOutlined} from '@ant-design/icons';
+import {LeftOutlined,RightOutlined} from '@ant-design/icons';
 import {useParams,useHistory} from 'react-router-dom';
 import GoBack from '../Components/GoBack';
 import Opcoes from '../Components/Opcoes';
@@ -13,13 +14,14 @@ const Detalhes = () =>{
     const myState=useContext(MenuContext);
     const myHistory=useHistory();
     const {id} = useParams();
-    const [produto,setProduto] = useState({id:1,name:'Produto 1',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.50}],options:[1]});
+    const [produto,setProduto] = useState({id:1,name:'',desc:'',imgSrc:'/placeholder.png',prices:[{info:'',val:0}],options:[1]});
     const [counter,setCounter] = useState(1);
     const [price,setPrice] = useState(undefined);
     const [options,setOptions] = useState([]);
 
-    useEffect(()=>{
-        setProduto(myState.findProductById(parseInt(id)));
+    useEffect(async ()=>{
+        const response = await axios.get("https://augustomenumaker.herokuapp.com/produto/"+id);
+        setProduto(response.data);
     },[]);
 
     function getOptions(lista) {
@@ -36,17 +38,20 @@ const Detalhes = () =>{
         //{quant:1,val:0,productId:1,options:[{name:'',add:0}]}
         if (produto.prices.length>1 && price===undefined){
             message.error('Por favor selecione um preço.');
+        } else {
+            var unit={
+                product:produto,
+                options:options,
+                val:produto.prices.length===1?produto.prices[0].val:price,
+                quant:counter
+            }
+            console.log(unit);
+            myState.addProdutoCarrinho(unit);
+            myHistory.goBack();
         }
-        var unit={
-            productId:parseInt(id),
-            options:options,
-            val:produto.prices.length===1?produto.prices[0].val:price,
-            quant:counter
-        }
-        console.log(unit);
-        myState.addProdutoCarrinho(unit);
-        myHistory.goBack();
+        
     }
+
     return(
         <>
             <GoBack name='Detalhes do produto'/>

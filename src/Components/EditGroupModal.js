@@ -5,11 +5,11 @@ const EditGroupModal = ({
   visible,
   onOk,
   onCancel,
-  initialName
+  initialValues
 }) => {
   const [form] = Form.useForm();
 
-  form.setFieldsValue({nome:initialName});
+  form.setFieldsValue({name:initialValues.name});
 
   return (
     <Modal
@@ -22,6 +22,7 @@ const EditGroupModal = ({
         form
           .validateFields()
           .then(values => {
+            values._id=initialValues._id;
             form.resetFields();
             onOk(values);
           })
@@ -35,23 +36,12 @@ const EditGroupModal = ({
             name="form_in_modal"
         >
             <Form.Item
-            name="nome"
+            name="name"
             label="Nome do grupo"
             rules={[{ required: true, message: 'Por favor insira o nome do grupo.' }]}
             >
                 <Input />
             </Form.Item>
-            {/*
-            <Form.Item name="description" label="Description">
-                <Input type="textarea" />
-            </Form.Item>
-            
-            <Form.Item name="modifier">
-                <Radio.Group>
-                    <Radio value="public">Public</Radio>
-                    <Radio value="private">Private</Radio>
-                </Radio.Group>
-            </Form.Item>*/}
         </Form>
     </Modal>
   );

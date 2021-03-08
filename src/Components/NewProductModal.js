@@ -23,6 +23,8 @@ const NewProductModal = ({
         form
           .validateFields()
           .then(values => {
+            values.imgSrc='/placeholder.png'
+            values.options=[]
             form.resetFields();
             onOk(values);
           })
@@ -37,7 +39,7 @@ const NewProductModal = ({
             name="form_in_modal"
         >
             <Form.Item
-            name="nome"
+            name="name"
             label="Nome do produto"
             rules={[{ required: true, message: 'Por favor insira o nome do novo produto.' }]}
             >
@@ -45,7 +47,7 @@ const NewProductModal = ({
             </Form.Item>
             
             <Form.Item
-            name="descricao"
+            name="desc"
             label="Descrição"
             >
                 <TextArea rows='3'/>

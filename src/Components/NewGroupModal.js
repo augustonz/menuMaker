@@ -31,7 +31,7 @@ const NewGroupModal = ({
             name="form_in_modal"
         >
             <Form.Item
-            name="nome"
+            name="name"
             label="Nome do grupo"
             rules={[{ required: true, message: 'Por favor insira o nome do novo grupo.' }]}
             >

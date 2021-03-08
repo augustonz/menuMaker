@@ -80,7 +80,7 @@ const NewOptionModal = ({
                             {...field}
                             name={[field.name, 'add']}
                             fieldKey={[field.fieldKey, 'add']}
-                            rules={[{ required: true, message: 'Informe o calor adicional' }]}
+                            rules={[{ required: true, message: 'Informe o valor adicional' }]}
                             >
                                 <Input placeholder="R$0.00" type='number' />
                             </Form.Item>
