@@ -1,26 +1,40 @@
-import React,{useContext,useState} from 'react';
+import React,{useEffect,useState} from 'react';
 
 import {Col,Row,Button,Tooltip,Modal,Image} from 'antd';
 import {PlusOutlined,EditOutlined,DeleteOutlined,ExclamationCircleOutlined} from '@ant-design/icons';
+import axios from 'axios';
 
 import NewProductModal from './NewProductModal';
 import EditProductModal from './EditProductModal';
 import AddOptionModal from './AddOptionModal';
-import {MenuContext} from '../contexts/ThemeContext';
 
 const {confirm} = Modal;
 
-const ProdutosList = ({Group}) =>{
+const ProdutosList = ({grupo,refreshGroupList}) =>{
 
-    const myState=useContext(MenuContext);
     const [editItem,setEditItem] = useState({});
     const [isModalNewVisible,setModalNewVisibility]=useState(false);
     const [isModalEditVisible,setModalEditVisibility]=useState(false);
     const [isModalOptionVisible,setModalOptionVisibility]=useState(false);
+    const [produtos,setProdutos]=useState([]);
+    const group=grupo;
     
-    const group=Group;
+    function refreshList() {
+        if (grupo){
+            if (grupo._id){
+                axios.get(`https://augustomenumaker.herokuapp.com/grupo/${grupo._id}/produtos`).then(res=>{
+                    setProdutos(res.data)})
+                .catch(err=>console.log(err));
+            }   
+        }
+    }
 
-    const ShowProducts = group?group.products.map((item,index) => (
+    useEffect(()=>{
+        refreshList();
+    },[grupo])
+    
+    
+    const ShowProducts = group?produtos.map((item,index) => (
         <Row key={index} style={{paddingTop:'8px', backgroundColor:'white',marginLeft:'24px',marginBottom:'1px',minHeight:'15vh',alignContent:'center'}}>
             <Col span='4'><Image style={{padding:0}} preview={false} src={item.imgSrc} width='80px' /></Col>
             <Col span='16' style={{textAlign:'left',overflow:'hidden'}}>
@@ -35,7 +49,7 @@ const ProdutosList = ({Group}) =>{
             <Col span='4' style={{paddingTop:'20px'}}>
                 <Tooltip title='editar' color='white'><Button shape='circle' onClick={()=>editProduct(item)} icon={<EditOutlined />}/></Tooltip>
                 <Tooltip title='opcionais' color='white'><Button style={{margin:'0 7px'}} shape='circle' onClick={()=>addOption(item)} icon={<PlusOutlined />}/></Tooltip>
-                <Tooltip title='excluir' color='white'><Button shape='circle' danger onClick={()=>delProduct(item.id)} icon={<DeleteOutlined />}/></Tooltip>
+                <Tooltip title='excluir' color='white'><Button shape='circle' danger onClick={()=>delProduct(item._id)} icon={<DeleteOutlined />}/></Tooltip>
             </Col>
         </Row>
     )):null;
@@ -45,26 +59,20 @@ const ProdutosList = ({Group}) =>{
     }
 
     const handleNewOk = (values) =>{
-        let product={
-            id:0,
-            name:values.nome,
-            desc:values.descricao,
-            imgSrc:'/placeholder.png',
-            options:[]
-        }
-        if (values.descricao===undefined){
-            product.desc='Descrição vazia'
+        values.grupo=group;
+        if (values.desc===undefined){
+            values.desc='Descrição vazia'
         }
         if (values.price){
-            product.prices=[{info:'Preço',val:Number(values.price)}];
+            values.prices=[{info:'Preço',val:Number(values.price)}];
         } else {
             for (var i in values.prices){
                 values.prices[i].val=Number(values.prices[i].val);
             }
-            product.prices=values.prices;
         }
-        
-        myState.newProduct(group.id,product);
+        axios.post('https://augustomenumaker.herokuapp.com/produto/add',values).then(res=>{refreshGroupList()})
+        .catch(err=>console.log(err));
+        //myState.newProduct(group.id,product);
         setModalNewVisibility(false);
     }
 
@@ -73,26 +81,21 @@ const ProdutosList = ({Group}) =>{
         setModalEditVisibility(true);
     }
 
-    const handleEditOk = (values,initial) =>{
-        let product={
-            id:initial.id,
-            name:values.nome,
-            desc:values.descricao,
-            imgSrc:initial.imgSrc,
-            options:[]
-        }
-        if (values.descricao===undefined){
-            product.desc='Descrição vazia'
+    const handleEditOk = (values) =>{
+        if (values.desc===undefined){
+            values.desc='Descrição vazia'
         }
         if (values.price){
-            product.prices=[{info:'Preço',val:Number(values.price)}];
+            values.prices=[{info:'Preço',val:Number(values.price)}];
         } else {
             for (var i in values.prices){
                 values.prices[i].val=Number(values.prices[i].val);
             }
-            product.prices=values.prices;
         }
-        myState.editProduct(group.id,product);
+        console.log(values);
+        axios.post('https://augustomenumaker.herokuapp.com/produto/update/'+values._id,values).then(res=>refreshList())
+        .catch(err=>console.log(err));
+        //myState.editProduct(group.id,product);
         setModalEditVisibility(false);
     }
 
@@ -106,7 +109,19 @@ const ProdutosList = ({Group}) =>{
             cancelText: 'Não',
             closable:true,
             onOk() {
-              myState.delProduct(group.id,id);
+                axios.delete('https://augustomenumaker.herokuapp.com/produto/'+id).then(res=>{
+                    let Grupo=group;
+                    
+                    var index = Grupo.products.map(x => {
+                        return x;
+                    }).indexOf(id);
+                    Grupo.products.splice(index,1);
+                    
+                    axios.post('https://augustomenumaker.herokuapp.com/grupo/update/'+Grupo._id,Grupo).then(res=>refreshGroupList())
+                    .catch(err=>console.log(err));
+                })
+                .catch(err=>console.log(err));
+              //myState.delProduct(group.id,id);
             },
             onCancel() {
             },
@@ -121,7 +136,9 @@ const ProdutosList = ({Group}) =>{
     const handleAddOption = (list) => {
         let produto=editItem;
         produto.options=list;
-        myState.editProduct(group.id,produto);
+        axios.post('https://augustomenumaker.herokuapp.com/produto/update/'+produto._id,produto).then(res=>refreshList())
+        .catch(err=>console.log(err));
+        //myState.editProduct(group.id,produto);
         setModalOptionVisibility(false);
     }
     return(
@@ -130,7 +147,6 @@ const ProdutosList = ({Group}) =>{
             visible={isModalOptionVisible} 
             onOk={handleAddOption} 
             onCancel={() => {setModalOptionVisibility(false)}}
-            opcoesIds={myState.getOpcoesIds()}
             selectedIds={editItem.options}/>
 
             <NewProductModal

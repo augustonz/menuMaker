@@ -1,25 +1,30 @@
-import React,{useContext,useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import {List,Button,Tooltip,Modal,Row,Col} from 'antd';
-import {MenuContext} from '../contexts/ThemeContext';
 import {DeleteOutlined,PlusOutlined,EditOutlined,ExclamationCircleOutlined} from '@ant-design/icons';
+import axios from 'axios';
 
 import NewGroupModal from './NewGroupModal';
 import EditGroupModal from './EditGroupModal';
 const {confirm} = Modal;
 
-const GroupsList= ({groupSetter})=>{
+const GroupsList= ({groupSetter,list,refreshList})=>{
 
-    const myState=useContext(MenuContext);
     const [editItem,setEditItem]=useState({});
     const [isModalNewVisible,setModalNewVisibility]=useState(false);
     const [isModalEditVisible,setModalEditVisibility]=useState(false);
 
+    useEffect(()=>{
+        refreshList();
+      },[]);
+      
     const newGroup = () =>{
         setModalNewVisibility(true);
     }
 
     const handleNewOk = (values) =>{
-        myState.newGroup(values.nome);
+        values.products=[];
+        axios.post('https://augustomenumaker.herokuapp.com/grupo/add',values).then(res=>refreshList());
+        //myState.newGroup(values.name);
         setModalNewVisibility(false);
     }
 
@@ -29,7 +34,13 @@ const GroupsList= ({groupSetter})=>{
     }
 
     const handleEditOk = (values) =>{
-        myState.editGroup(editItem.id,values.nome);
+        values.products=editItem.products;
+        
+        axios.post('https://augustomenumaker.herokuapp.com/grupo/update/'+values._id,values).then(res=>{
+            console.log(res);
+            refreshList()})
+            .catch(err=>console.log(err));
+        //myState.editGroup(editItem.id,values.nome);
         setModalEditVisibility(false);
     }
 
@@ -43,7 +54,11 @@ const GroupsList= ({groupSetter})=>{
             cancelText: 'Não',
             closable:true,
             onOk() {
-              myState.deleteGroup(id);
+                axios.delete('https://augustomenumaker.herokuapp.com/grupo/'+id).then(res=>{
+                    refreshList()})
+                .catch(err=>console.log(err))
+                
+                //myState.deleteGroup(id);
             },
             onCancel() {
             },
@@ -59,7 +74,7 @@ const GroupsList= ({groupSetter})=>{
             </NewGroupModal>
 
             <EditGroupModal
-            initialName={editItem.name}
+            initialValues={editItem}
             visible={isModalEditVisible} 
             onOk={handleEditOk} 
             onCancel={() => {setModalEditVisibility(false)}}>
@@ -72,14 +87,14 @@ const GroupsList= ({groupSetter})=>{
                 <Col offset='1'><h1 className='color'>Grupos</h1></Col>
             </Row>
 
-            {myState.state.cardapio.grupos.length===0?<h1 style={{padding:20}}>Crie um grupo de produtos utilizando o botão acima</h1>:
+            {list.length===0?<h1 style={{padding:20}}>Crie um grupo de produtos utilizando o botão acima</h1>:
             <List
             itemLayout='horizontal' 
-            dataSource={myState.state.cardapio.grupos}
+            dataSource={list}
             renderItem={item=>(
-                <List.Item onClick={()=>groupSetter(item)} style={{backgroundColor:'white'}} key={item.id}  
+                <List.Item onClick={()=>{groupSetter(item);}} style={{backgroundColor:'white'}} key={item.id}  
                 actions={[<Tooltip title='editar' color='white'><Button shape='circle' onClick={event=>{event.stopPropagation();event.nativeEvent.stopImmediatePropagation();editGroup(item)}} icon={<EditOutlined />}/></Tooltip>,
-                <Tooltip title='excluir' color='white'><Button shape='circle' danger onClick={event=>{event.stopPropagation();event.nativeEvent.stopImmediatePropagation();delGroup(item.id)}} icon={<DeleteOutlined />}/></Tooltip>]}>
+                <Tooltip title='excluir' color='white'><Button shape='circle' danger onClick={event=>{event.stopPropagation();event.nativeEvent.stopImmediatePropagation();delGroup(item._id)}} icon={<DeleteOutlined />}/></Tooltip>]}>
                     <List.Item.Meta title={item.name} description={'Produtos: '+item.products.length} />
                 </List.Item>
             )} />}

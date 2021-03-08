@@ -4,12 +4,12 @@ export const MenuContext = createContext();
 
 class MenuContextProvider extends Component{
     state = {
-        storeInfo:{address:'',description:'',name:'',storeCode:'',hellomessage:'',openTime:''},
         collapsed:false,
+        carrinho: [{quant:1,val:0,product:{},options:[{name:'',add:0}]}],
         groupId:3,
         productId:3,
         optionsId:3,
-        carrinho:[],
+        storeInfo:{address:'',description:'',name:'',storeCode:'',hellomessage:'',openTime:''},
         cardapio:{grupos:[{id:1,name:'Açaís',products:[
             {id:1,name:'Produto 1',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.50}],options:[1]}
         ,{id:2,name:'Produto 2',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.00}]}],options:[2]}
@@ -17,16 +17,23 @@ class MenuContextProvider extends Component{
     }
 
     componentWillMount = () => {
-        this.setState(JSON.parse(window.localStorage.getItem('state')));
+        
+        this.setState({cardapio:this.state.cardapio,
+            carrinho:JSON.parse(window.localStorage.getItem('state')).carrinho,
+            collapsed:JSON.parse(window.localStorage.getItem('state')).collapsed});
     }
 
-    storeState = () =>{
-        window.localStorage.setItem('state',JSON.stringify(this.state));
+    storeStateLocal = () =>{
+        window.localStorage.setItem('state',JSON.stringify({carrinho:this.state.carrinho,collapsed:this.state.collapsed}));
+    }
+
+    storeStateDatabase = () => {
+
     }
 
     updateCollapseHandler = (state)=>{
         this.setState({collapsed:state});
-        this.storeState();
+        this.storeStateLocal();
     }
 
     newGroupHandler = (groupName) => {
@@ -39,7 +46,7 @@ class MenuContextProvider extends Component{
         this.setState({
             cardapio:{grupos:Grupos,options:this.state.cardapio.options}
         })
-        this.storeState();
+        this.storeStateDatabase();
     }
 
     editGroupHandler = (Id,groupName)=>{
@@ -51,7 +58,7 @@ class MenuContextProvider extends Component{
         this.setState({
             cardapio:{grupos:newArr,options:this.state.cardapio.options}
         })
-        this.storeState();
+        this.storeStateDatabase();
     }
 
     deleteGroupHandler = (Id)=>{
@@ -63,7 +70,7 @@ class MenuContextProvider extends Component{
         this.setState({
             cardapio:{grupos:newArr,options:this.state.cardapio.options}
         })
-        this.storeState();
+        this.storeStateDatabase();
     }
     
     newProductHandler = (grupoId,produto) => {
@@ -80,7 +87,7 @@ class MenuContextProvider extends Component{
         this.setState({
             cardapio:{grupos:Grupos,options:this.state.cardapio.options},
         })
-        this.storeState();
+        this.storeStateDatabase();
     }
 
     editProductHandler = (grupoId,produto) =>{
@@ -97,7 +104,7 @@ class MenuContextProvider extends Component{
         this.setState({
             cardapio:{grupos:Grupos,options:this.state.cardapio.options},
         })
-        this.storeState();
+        this.storeStateDatabase();
     }
 
     deleteProductHandler = (grupoId,Id) => {
@@ -116,7 +123,7 @@ class MenuContextProvider extends Component{
         this.setState({
             cardapio:{grupos:Grupos,options:this.state.cardapio.options},
         })
-        this.storeState();
+        this.storeStateDatabase();
     }
 
     newOptionHandler = (option) => {
@@ -129,7 +136,7 @@ class MenuContextProvider extends Component{
         this.setState({
             cardapio:{grupos:this.state.cardapio.grupos,options:Options}
         })
-        this.storeState();
+        this.storeStateDatabase();
     }
 
     editOptionHandler = (option)=>{
@@ -141,7 +148,7 @@ class MenuContextProvider extends Component{
         this.setState({
             cardapio:{grupos:this.state.cardapio.grupos,options:newArr}
         })
-        this.storeState();
+        this.storeStateDatabase();
     }
 
     deleteOptionHandler = (Id)=>{
@@ -153,7 +160,7 @@ class MenuContextProvider extends Component{
         this.setState({
             cardapio:{grupos:this.state.cardapio.grupos,options:newArr}
         })
-        this.storeState();
+        this.storeStateDatabase();
     }
 
     findOptionsByIdHandler = (Ids) => {
@@ -197,7 +204,7 @@ class MenuContextProvider extends Component{
         this.setState({
             carrinho:newArr
         });
-        this.storeState();
+        this.storeStateLocal();
     }
 
     removeProdutoCarrinhoHandler = () => {
@@ -206,7 +213,7 @@ class MenuContextProvider extends Component{
         this.setState({
             carrinho:newArr
         });
-        this.storeState();
+        this.storeStateLocal();
     }
 
     render(){

@@ -20,12 +20,12 @@ const Carrinho = () => {
                 </Row>
         
                 {carrinho.map((item,indx)=>{
-                    let produto=myState.findProductById(item.productId);
+                    console.log(item);
                     return(
                         <Row justify='center' align='middle'>
                             <Col span='18'>
                                 <p style={{display:'inline'}}>{item.quant}x </p>
-                                <p style={{display:'inline'}}>{produto.name}</p>
+                                <p style={{display:'inline'}}>{item.product.name}</p>
                             </Col>
                             <Col>
                                 <p style={{display:'inline'}}>R${String((item.quant*item.val).toFixed(2)).replace('.',',')}</p>

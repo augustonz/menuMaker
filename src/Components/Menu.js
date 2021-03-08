@@ -1,30 +1,54 @@
-import React,{useContext} from 'react';
+import React,{useState,useEffect} from 'react';
 import {List} from 'antd';
 import {useHistory} from 'react-router-dom';
-import {MenuContext} from '../contexts/ThemeContext';
+import axios from 'axios';
 
 const Menu = () =>{
 
-    const myState = useContext(MenuContext);
+    const [grupos,setGrupos]=useState([]);
+    const [produtos,setProdutos]=useState([]);
+
+    useEffect(async()=>{
+        const response = await axios.get("https://augustomenumaker.herokuapp.com/grupo")
+        setGrupos(response.data);
+    },[]);
+
+    useEffect(async ()=>{
+        console.log(grupos);
+        var temp=[];
+        for (var grupo=0;grupo<grupos.length;grupo++){
+            const response= await axios.get(`https://augustomenumaker.herokuapp.com/grupo/${grupos[grupo]._id}/produtos`);
+            temp.push(response.data)
+        }
+        setProdutos(temp);
+        
+    },[grupos]);
+    
+    
+    
+
+    
+    
     const history=useHistory();
 
     return (
         <>
             { 
-                myState.state.cardapio.grupos.map((val,index)=>(
+                grupos.map((val,index)=>{
+
+                    return(
                     <>
-                        <List style={{overflowX:'hidden'}}
+                        <List style={{overflowX:'hidden',backgroundColor:'white'}}
                         itemLayout='vertical'
-                        style={{backgroundColor:'white'}}
                         header={
                         <div style={{paddingLeft:'5px'}}>
                             <h1>{val.name}</h1>
                         </div>}
-                        dataSource={val.products}
+                        dataSource={produtos[index]}
                         renderItem={item=>(
                             <List.Item
                             style={{backgroundColor:'white',paddingRight:'15px',paddingLeft:'15px'}} 
-                            onClick={()=>history.push('/produto/'+item.id)}
+                            onClick={()=>history.push('/produto/'+item._id)}
                             extra={
                                 <img src={item.imgSrc}
                                 alt='logo'
@@ -36,8 +60,8 @@ const Menu = () =>{
                             </List.Item>
                         )}>
                         </List>
-                        </>
-                ))
+                        </>)
+                })
             }
         </>
     )

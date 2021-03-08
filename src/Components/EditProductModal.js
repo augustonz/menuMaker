@@ -14,16 +14,10 @@ const EditProductModal = ({
   const [priceType,setPriceType] = useState(1);
   const [form] = Form.useForm();
 
-  const func = useEffect(()=>{
+  useEffect(()=>{
       if (visible){
-        if (form.getFieldsValue().nome===undefined){
-            form.setFieldsValue({nome:initialValues.name});
-        }
-    
-        if (form.getFieldsValue().descricao===undefined){
-            form.setFieldsValue({descricao:initialValues.desc});
-        }
-    
+        form.setFieldsValue({name:initialValues.name});
+        form.setFieldsValue({desc:initialValues.desc});
         if (initialValues.prices){
             if (initialValues.prices.length>1){
                 setPriceType(2);
@@ -40,7 +34,7 @@ const EditProductModal = ({
             }
         }
       }
-  },[visible])
+  },[visible]);
   
   return (
     <Modal
@@ -55,8 +49,11 @@ const EditProductModal = ({
         form
           .validateFields()
           .then(values => {
+            values._id=initialValues._id;
+            values.imgSrc=initialValues.imgSrc;
+            values.options=initialValues.options;
             form.resetFields();
-            onOk(values,initialValues);
+            onOk(values);
           })
           .catch(info => {
           });
@@ -69,7 +66,7 @@ const EditProductModal = ({
             name="form_in_modal"
         >
             <Form.Item
-            name="nome"
+            name="name"
             label="Nome do produto"
             rules={[{ required: true, message: 'Por favor insira o nome do novo produto.' }]}
             >
@@ -77,7 +74,7 @@ const EditProductModal = ({
             </Form.Item>
             
             <Form.Item
-            name="descricao"
+            name="desc"
             label="Descrição"
             >
                 <TextArea rows='3'/>
