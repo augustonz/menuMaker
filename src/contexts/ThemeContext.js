@@ -5,10 +5,11 @@ export const MenuContext = createContext();
 class MenuContextProvider extends Component{
     state = {
         collapsed:false,
-        carrinho: [{quant:1,val:0,product:{},options:[{name:'',add:0}]}],
+        carrinho: [],
         groupId:3,
         productId:3,
         optionsId:3,
+        carrinhoId:1,
         storeInfo:{address:'',description:'',name:'',storeCode:'',hellomessage:'',openTime:''},
         cardapio:{grupos:[{id:1,name:'Açaís',products:[
             {id:1,name:'Produto 1',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.50}],options:[1]}
@@ -25,7 +26,7 @@ class MenuContextProvider extends Component{
     }
 
     storeStateLocal = () =>{
-        window.localStorage.setItem('state',JSON.stringify({carrinho:this.state.carrinho,collapsed:this.state.collapsed}));
+        window.localStorage.setItem('state',JSON.stringify({carrinhoId:this.state.carrinhoId,carrinho:this.state.carrinho,collapsed:this.state.collapsed}));
     }
 
     storeStateDatabase = () => {
@@ -201,16 +202,21 @@ class MenuContextProvider extends Component{
 
     addProdutoCarrinhoHandler = (unit) => {
         let newArr=this.state.carrinho;
+        unit.id=this.state.carrinhoId;
         newArr.push(unit);
         this.setState({
+            carrinhoId:this.state.carrinhoId+1,
             carrinho:newArr
         });
         this.storeStateLocal();
     }
 
-    removeProdutoCarrinhoHandler = () => {
+    removeProdutoCarrinhoHandler = (id) => {
         let newArr=this.state.carrinho;
-        newArr.pop();
+        var index = newArr.map(x => {
+            return x.id;
+          }).indexOf(id);
+        newArr.splice(index,1);
         this.setState({
             carrinho:newArr
         });

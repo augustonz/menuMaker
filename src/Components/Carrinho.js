@@ -1,5 +1,5 @@
 import React,{useContext} from 'react';
-import {Row,Col, Divider} from 'antd';
+import {Row,Col, Divider,Popover} from 'antd';
 import {MoreOutlined} from '@ant-design/icons';
 import {MenuContext} from '../contexts/ThemeContext';
 const Carrinho = () => {
@@ -7,6 +7,7 @@ const Carrinho = () => {
     //{id:1,name:'Produto 1',desc:'Descrição',imgSrc:'/placeholder.png',prices:[{info:'Preço: ',val:10.50}],options:[1]}
     const myState = useContext(MenuContext);
     const carrinho=myState.state.carrinho;
+
     return (
         <>
             <div style={{padding:'10px',fontWeight:'bolder'}}>
@@ -31,7 +32,10 @@ const Carrinho = () => {
                                 <p style={{display:'inline'}}>R${String((item.quant*item.val).toFixed(2)).replace('.',',')}</p>
                             </Col>
                             <Col style={{fontSize:'20px'}}>
+                            <Popover content={<p onClick={()=>myState.removeProdutoCarrinho(item.id)}>Excluir</p>} placement="bottom" trigger="click">
                                 <MoreOutlined/>
+                            </Popover>
+                                
                             </Col>
                             {indx<carrinho.length-1?<Divider style={{margin:'3px'}}/>:null}
                         </Row>

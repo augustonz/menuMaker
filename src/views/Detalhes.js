@@ -40,6 +40,7 @@ const Detalhes = () =>{
             message.error('Por favor selecione um preço.');
         } else {
             var unit={
+                id:0,
                 product:produto,
                 options:options,
                 val:produto.prices.length===1?produto.prices[0].val:price,

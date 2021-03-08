@@ -1,5 +1,5 @@
 import React,{useContext} from 'react';
-import {Row,Col,Button} from 'antd'
+import {Row,Col,Button,Divider} from 'antd'
 import GoBack from '../Components/GoBack';
 import Carrinho from '../Components/Carrinho';
 import {MenuContext} from '../contexts/ThemeContext';
@@ -11,13 +11,17 @@ const Pedido = () => {
     return(
         <>
             <GoBack name='Meu pedido'/>
-            <Carrinho/>
 
+            {myState.state.carrinho.length>0?<Carrinho/>:<p>Seu carrinho está vazio no momento, adicione algum produto!</p>}
+
+            <Divider></Divider>
             <Row justify='center'>
                 <Col>
-                    <Button onClick={()=>myState.removeProdutoCarrinho()}>Deletar item</Button>
+                    <Button size='large' style={{backgroundColor:"#47b3f7",color:"white"}}>Finalizar pedido</Button>
                 </Col>
             </Row>
+            
+            
         </>
     )
 }
