@@ -17,10 +17,11 @@ class MenuContextProvider extends Component{
     }
 
     componentWillMount = () => {
-        
-        this.setState({cardapio:this.state.cardapio,
-            carrinho:JSON.parse(window.localStorage.getItem('state')).carrinho,
-            collapsed:JSON.parse(window.localStorage.getItem('state')).collapsed});
+        if (JSON.parse(window.localStorage.getItem('state'))!==null){
+            this.setState({cardapio:this.state.cardapio,
+                carrinho:JSON.parse(window.localStorage.getItem('state')).carrinho,
+                collapsed:JSON.parse(window.localStorage.getItem('state')).collapsed});
+        }   
     }
 
     storeStateLocal = () =>{
