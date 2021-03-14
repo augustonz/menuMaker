@@ -5,7 +5,7 @@ export const MenuContext = createContext();
 class MenuContextProvider extends Component{
     state = {
         collapsed:false,
-        url:"http://localhost:4000/",
+        url:"https://augustomenumaker.herokuapp.com/",
         carrinho: [],
         groupId:3,
         productId:3,
@@ -47,7 +47,7 @@ class MenuContextProvider extends Component{
     }
 
     getOpcoesHandler= async() =>{
-        const response= await axios.get('https://augustomenumaker.herokuapp.com/opcao/');
+        const response= await axios.get(`${this.state.url}opcao/`);
         return response.data;
     }
 
