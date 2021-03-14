@@ -1,31 +1,29 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useContext} from 'react';
 import {List,Button,Tooltip,Modal,Row,Col} from 'antd';
 import {DeleteOutlined,PlusOutlined,EditOutlined,ExclamationCircleOutlined} from '@ant-design/icons';
-import axios from 'axios';
+import {MenuContext} from '../contexts/ThemeContext';
 
 import NewGroupModal from './NewGroupModal';
 import EditGroupModal from './EditGroupModal';
 const {confirm} = Modal;
 
-const GroupsList= ({groupSetter,list,refreshList})=>{
+const GroupsList= ({groupSetter,loadingSetter,list,refreshList})=>{
 
+    const myContext=useContext(MenuContext);
     const [editItem,setEditItem]=useState({});
     const [isModalNewVisible,setModalNewVisibility]=useState(false);
     const [isModalEditVisible,setModalEditVisibility]=useState(false);
-
-    useEffect(()=>{
-        refreshList();
-      },[]);
       
     const newGroup = () =>{
         setModalNewVisibility(true);
     }
 
-    const handleNewOk = (values) =>{
-        values.products=[];
-        axios.post('https://augustomenumaker.herokuapp.com/grupo/add',values).then(res=>refreshList());
-        //myState.newGroup(values.name);
+    const handleNewOk = async(values) =>{
         setModalNewVisibility(false);
+        loadingSetter(true);
+        await myContext.createGroup(values);
+        refreshList();
+        
     }
 
     const editGroup = (item) =>{
@@ -33,32 +31,28 @@ const GroupsList= ({groupSetter,list,refreshList})=>{
         setModalEditVisibility(true);
     }
 
-    const handleEditOk = (values) =>{
-        values.products=editItem.products;
-        
-        axios.post('https://augustomenumaker.herokuapp.com/grupo/update/'+values._id,values).then(res=>{
-            console.log(res);
-            refreshList()})
-            .catch(err=>console.log(err));
-        //myState.editGroup(editItem.id,values.nome);
+    const handleEditOk = async (values) =>{
         setModalEditVisibility(false);
+        loadingSetter(true);
+        await myContext.editGroup(values);
+        refreshList();
+        
     }
 
     const delGroup = (id) =>{
         confirm({
-            title: 'Você quer excluir esse grupo?',
+            title: 'Você tem certeza que deseja excluir esse grupo?',
             icon: <ExclamationCircleOutlined />,
             content: 'Todos os produtos do grupo serão excluidos também.',
             okText: 'Sim',
             okType: 'danger',
             cancelText: 'Não',
             closable:true,
-            onOk() {
-                axios.delete('https://augustomenumaker.herokuapp.com/grupo/'+id).then(res=>{
-                    refreshList()})
-                .catch(err=>console.log(err))
-                
-                //myState.deleteGroup(id);
+            async onOk() {
+                loadingSetter(true);
+                groupSetter(null);
+                await myContext.deleteGroup(id);
+                refreshList();
             },
             onCancel() {
             },

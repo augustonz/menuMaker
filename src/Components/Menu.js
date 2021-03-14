@@ -1,40 +1,25 @@
-import React,{useState,useEffect} from 'react';
-import {List} from 'antd';
+import React,{useState,useEffect,useContext} from 'react';
+import {List,Spin} from 'antd';
 import {useHistory} from 'react-router-dom';
-import axios from 'axios';
-
+import {MenuContext} from '../contexts/ThemeContext';
 const Menu = () =>{
 
-    const [grupos,setGrupos]=useState([]);
-    const [produtos,setProdutos]=useState([]);
+    const [lista,setLista] = useState([]);
+    const [loading,setLoading] = useState(true);
+    const myContext = useContext(MenuContext);
 
     useEffect(async()=>{
-        const response = await axios.get("https://augustomenumaker.herokuapp.com/grupo")
-        setGrupos(response.data);
-    },[]);
+        setLista(await myContext.getMenu());
+        setLoading(false);
+    },[myContext]);
 
-    useEffect(async ()=>{
-        console.log(grupos);
-        var temp=[];
-        for (var grupo=0;grupo<grupos.length;grupo++){
-            const response= await axios.get(`https://augustomenumaker.herokuapp.com/grupo/${grupos[grupo]._id}/produtos`);
-            temp.push(response.data)
-        }
-        setProdutos(temp);
-        
-    },[grupos]);
-    
-    
-    
-
-    
-    
     const history=useHistory();
 
     return (
         <>
-            { 
-                grupos.map((val,index)=>{
+            {loading?<div style={{backgroundColor:'white',width:'100%',textAlign:'center',height:'72vh',padding:'35vh 0'}}><Spin size='large'/><br/><h2>Carregando menu...</h2></div>:
+            
+                lista.map((val,index)=>{
 
                     return(
                     <>
@@ -44,7 +29,7 @@ const Menu = () =>{
                         <div style={{paddingLeft:'5px'}}>
                             <h1>{val.name}</h1>
                         </div>}
-                        dataSource={produtos[index]}
+                        dataSource={val.products}
                         renderItem={item=>(
                             <List.Item
                             style={{backgroundColor:'white',paddingRight:'15px',paddingLeft:'15px'}} 

@@ -1,10 +1,11 @@
 import React ,{createContext,Component} from 'react';
-
+import axios from 'axios';
 export const MenuContext = createContext();
 
 class MenuContextProvider extends Component{
     state = {
         collapsed:false,
+        url:"http://localhost:4000/",
         carrinho: [],
         groupId:3,
         productId:3,
@@ -29,140 +30,71 @@ class MenuContextProvider extends Component{
         window.localStorage.setItem('state',JSON.stringify({carrinhoId:this.state.carrinhoId,carrinho:this.state.carrinho,collapsed:this.state.collapsed}));
     }
 
-    storeStateDatabase = () => {
-
-    }
-
     updateCollapseHandler = (state)=>{
         this.setState({collapsed:state});
         this.storeStateLocal();
     }
 
-    newGroupHandler = (groupName) => {
-        let group={id:this.state.groupId,name:groupName,products:[]}
-        this.setState({
-            groupId:this.state.groupId+1
-        })
-        let Grupos=this.state.cardapio.grupos;
-        Grupos.unshift(group);
-        this.setState({
-            cardapio:{grupos:Grupos,options:this.state.cardapio.options}
-        })
-        this.storeStateDatabase();
+    getMenuHandler = async() => {
+        const response = await axios.get(`${this.state.url}grupo`);
+        var grupos=response.data;
+    
+        for (var grupo=0;grupo<grupos.length;grupo++){
+            const response= await axios.get(`${this.state.url}grupo/${grupos[grupo]._id}/produtos`);
+            grupos[grupo].products=response.data;
+        }
+        return grupos;   
     }
 
-    editGroupHandler = (Id,groupName)=>{
-        let newArr=this.state.cardapio.grupos;
-        var index = newArr.map(x => {
-            return x.id;
-          }).indexOf(Id);
-        newArr[index].name=groupName;
-        this.setState({
-            cardapio:{grupos:newArr,options:this.state.cardapio.options}
-        })
-        this.storeStateDatabase();
+    getOpcoesHandler= async() =>{
+        const response= await axios.get('https://augustomenumaker.herokuapp.com/opcao/');
+        return response.data;
     }
 
-    deleteGroupHandler = (Id)=>{
-        let newArr=this.state.cardapio.grupos;
-        var index = newArr.map(x => {
-            return x.id;
-          }).indexOf(Id);
-        newArr.splice(index,1);
-        this.setState({
-            cardapio:{grupos:newArr,options:this.state.cardapio.options}
-        })
-        this.storeStateDatabase();
+    getProdutoHandler = async(id) => {
+        const response = await axios.get(`${this.state.url}produto/`+id);
+        return response.data;
+    }
+
+    createGroupHandler = async(values) => {
+        await axios.post(`${this.state.url}grupo/add`,values);
+    }
+
+    editGroupHandler = async(values) => {
+        await axios.post(`${this.state.url}grupo/update/${values._id}`,values);
+    }
+
+    deleteGroupHandler = async(id)=>{
+        await axios.delete(`${this.state.url}grupo/${id}`);
     }
     
-    newProductHandler = (grupoId,produto) => {
-        produto.id=this.state.productId;
-        this.setState({
-            productId:this.state.productId+1
-        });
-    
-        let Grupos=this.state.cardapio.grupos;
-        var indexGrupo = Grupos.map(x => {
-            return x.id;
-        }).indexOf(grupoId);
-        Grupos[indexGrupo].products.unshift(produto);
-        this.setState({
-            cardapio:{grupos:Grupos,options:this.state.cardapio.options},
-        })
-        this.storeStateDatabase();
+    createProductHandler = async(values) => {
+        await axios.post(`${this.state.url}produto/add`,values);
     }
 
-    editProductHandler = (grupoId,produto) =>{
-        let Grupos=this.state.cardapio.grupos;
-        var indexGrupo = Grupos.map(x => {
-            return x.id;
-        }).indexOf(grupoId);
-
-        var indexProduto = Grupos[indexGrupo].products.map(x => {
-            return x.id;
-        }).indexOf(produto.id);
-        
-        Grupos[indexGrupo].products[indexProduto]=produto;
-        this.setState({
-            cardapio:{grupos:Grupos,options:this.state.cardapio.options},
-        })
-        this.storeStateDatabase();
+    editProductHandler = async(values) =>{
+        await axios.post(`${this.state.url}produto/update/${values._id}`,values)
     }
 
-    deleteProductHandler = (grupoId,Id) => {
-        let Grupos=this.state.cardapio.grupos;
-        var indexGrupo = Grupos.map(x => {
-            return x.id;
-        }).indexOf(grupoId);
-
-        let newArr=this.state.cardapio.grupos[indexGrupo].products;
-        var index = newArr.map(x => {
-            return x.id;
-        }).indexOf(Id);
-        newArr.splice(index,1);
-
-        Grupos[indexGrupo].products=newArr;
-        this.setState({
-            cardapio:{grupos:Grupos,options:this.state.cardapio.options},
-        })
-        this.storeStateDatabase();
+    delProductHandler = async (grupo,id) => {
+        await axios.delete(`${this.state.url}produto/${id}`);     
+        var index = grupo.products.map(x => {
+            return x._id;
+        }).indexOf(id);
+        grupo.products.splice(index,1);
+        await axios.post(`${this.state.url}grupo/update/${grupo._id}`,grupo);
     }
 
-    newOptionHandler = (option) => {
-        option.id=this.state.optionsId;
-        this.setState({
-            optionsId:this.state.optionsId+1
-        })
-        var Options=this.state.cardapio.options;
-        Options.unshift(option);
-        this.setState({
-            cardapio:{grupos:this.state.cardapio.grupos,options:Options}
-        })
-        this.storeStateDatabase();
+    createOptionHandler = async(option) => {
+        await axios.post(`${this.state.url}opcao/add`,option);
     }
 
-    editOptionHandler = (option)=>{
-        let newArr=this.state.cardapio.options;
-        var index = newArr.map(x => {
-            return x.id;
-          }).indexOf(option.id);
-        newArr[index]=option;
-        this.setState({
-            cardapio:{grupos:this.state.cardapio.grupos,options:newArr}
-        })
-        this.storeStateDatabase();
+    editOptionHandler = async(option)=>{
+        await axios.post(`${this.state.url}opcao/update/${option._id}`,option);
     }
 
-    deleteOptionHandler = (Id)=>{
-        let newArr=this.state.cardapio.options;
-        var index = newArr.map(x => {
-            return x.id;
-          }).indexOf(Id);
-        newArr.splice(index,1);
-        this.setState({
-            cardapio:{grupos:this.state.cardapio.grupos,options:newArr}
-        })
-        this.storeStateDatabase();
+    delOptionHandler = async(id)=>{
+        await axios.delete(`${this.state.url}opcao/${id}`);
     }
 
     findOptionsByIdHandler = (Ids) => {
@@ -227,20 +159,23 @@ class MenuContextProvider extends Component{
         return(
             <MenuContext.Provider value={{state:this.state,
             updateCollapse:this.updateCollapseHandler,
-            newGroup:this.newGroupHandler,
+            createGroup:this.createGroupHandler,
             editGroup:this.editGroupHandler,
             deleteGroup:this.deleteGroupHandler,
-            newProduct:this.newProductHandler,
+            createProduct:this.createProductHandler,
             editProduct:this.editProductHandler,
-            delProduct:this.deleteProductHandler,
-            newOption:this.newOptionHandler,
+            delProduct:this.delProductHandler,
+            createOption:this.createOptionHandler,
             editOption:this.editOptionHandler,
-            delOption:this.deleteOptionHandler,
+            delOption:this.delOptionHandler,
             findProductById:this.findProductByIdHandler,
             findOptionsById:this.findOptionsByIdHandler,
             getOpcoesIds:this.getOpcoesIdsHandler,
+            getOpcoes:this.getOpcoesHandler,
             addProdutoCarrinho:this.addProdutoCarrinhoHandler,
-            removeProdutoCarrinho:this.removeProdutoCarrinhoHandler}}>
+            removeProdutoCarrinho:this.removeProdutoCarrinhoHandler,
+            getMenu:this.getMenuHandler,
+            getProduto:this.getProdutoHandler}}>
                 {this.props.children}
             </MenuContext.Provider>
         );

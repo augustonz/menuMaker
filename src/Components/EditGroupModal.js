@@ -23,6 +23,7 @@ const EditGroupModal = ({
           .validateFields()
           .then(values => {
             values._id=initialValues._id;
+            values.products=initialValues.products;
             form.resetFields();
             onOk(values);
           })

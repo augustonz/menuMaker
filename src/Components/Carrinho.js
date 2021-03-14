@@ -37,7 +37,7 @@ const Carrinho = () => {
                             </Popover>
                                 
                             </Col>
-                            {indx<carrinho.length-1?<Divider style={{margin:'3px'}}/>:null}
+                            <Divider style={{margin:'3px'}}/>
                         </Row>
                     )})}
             </div>

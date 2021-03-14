@@ -4,13 +4,12 @@ import {Row,Col,Checkbox} from 'antd'
 import {MenuContext} from '../contexts/ThemeContext'
 
 
-const Opcoes = ({opcoesIds,onOk}) => {
+const Opcoes = ({opcoes,onOk}) => {
 
-    const myState=useContext(MenuContext);
-    const listaOpcoes = myState.findOptionsById(opcoesIds);
+    const listaOpcoes = opcoes;
     const [listas,setListas] = useState(()=>{
         let list=[]
-        for (let i=0;i<opcoesIds.length;i++){
+        for (let i=0;i<opcoes.length;i++){
             list.push('[]');
         }
         return list;

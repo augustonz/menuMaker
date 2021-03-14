@@ -1,6 +1,6 @@
-import React,{useState,useEffect} from 'react';
-import {Modal,Checkbox,Row,Col} from 'antd';
-import axios from 'axios';
+import React,{useState,useEffect,useContext} from 'react';
+import {Modal,Checkbox,Row,Col,Spin} from 'antd';
+import {MenuContext} from '../contexts/ThemeContext';
 
 const AddOptionModal = (
     {
@@ -8,16 +8,19 @@ const AddOptionModal = (
     onCancel,
     onOk,
     selectedIds}) => {
+
+    const myContext=useContext(MenuContext);
+    const [loading,setLoading] = useState(true);
     const [listaOpcoes,setListaOpcoes] = useState([]);
     const [listaSelec,setListaSelec] = useState(selectedIds);
     function onChange(changeValues) {
         setListaSelec(changeValues);
     }
 
-    useEffect(()=>{
+    useEffect(async()=>{
         if (visible){
-            axios.get('https://augustomenumaker.herokuapp.com/opcao/').then(res=>setListaOpcoes(res.data))
-            .catch(err=>console.log(err));
+            setListaOpcoes(await myContext.getOpcoes());
+            setLoading(false);
             setListaSelec(selectedIds);
         } else {
             setListaSelec([]);
@@ -34,6 +37,7 @@ const AddOptionModal = (
             onCancel={onCancel}
             onOk={() => {onOk(listaSelec)}}
             >
+                {loading?<div style={{backgroundColor:'white',width:'100%',textAlign:'center',height:'72vh',padding:'35vh 0'}}><Spin size='large'/><br/></div>:
                 <Checkbox.Group style={{width:'100%',flexDirection:'row'}} onChange={onChange} value={listaSelec}>
                     <Row>
                     {listaOpcoes.map((opcoes)=>(
@@ -59,7 +63,7 @@ const AddOptionModal = (
                         </Col>
                     ))}
                     </Row>
-                </Checkbox.Group>
+                </Checkbox.Group>}
             </Modal>
         </>
     )

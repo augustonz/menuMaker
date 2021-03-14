@@ -19,6 +19,7 @@ const NewGroupModal = ({
           .validateFields()
           .then(values => {
             form.resetFields();
+            values.products=[];
             onOk(values);
           })
           .catch(info => {
