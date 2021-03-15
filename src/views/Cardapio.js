@@ -31,9 +31,14 @@ const Cardapio = () => {
       var index=grupos.map( (grupo)=>{
         return grupo._id;
       }).indexOf(group._id);
-      setGroup(grupos[index]);
+      if (index===-1){
+        setGroup(grupos[0]);
+      } else {
+        setGroup(grupos[index]);
+      }
     } else {
       setGroup(grupos[0]);
+      
     }
     setLoading(false);
   }
