@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router,Route,Switch} from 'react-router-dom';
 
-import Cardapio from './views/Cardapio.js';
+import Cardapio from './views/Cardapio';
 import Cliente from './views/Cliente';
 import Perfil from './views/Perfil';
 import Relatorios from './views/Relatorios';
 import Configuracoes from './views/Configuracoes';
 import Sobre from './views/Sobre';
 import Detalhes from './views/Detalhes';
-import Pedido from './views/Pedido.js';
+import Pedido from './views/Pedido';
 import MenuContextProvider from './contexts/ThemeContext';
 import './App.css'
 function App() {

@@ -1,8 +1,5 @@
-import React,{useContext,useEffect,useState} from 'react';
-
+import React,{useEffect,useState} from 'react';
 import {Row,Col,Checkbox} from 'antd'
-import {MenuContext} from '../contexts/ThemeContext'
-
 
 const Opcoes = ({opcoes,onOk}) => {
 
@@ -17,7 +14,7 @@ const Opcoes = ({opcoes,onOk}) => {
 
     useEffect(()=>{
         onOk(listas)
-    },[listas]);
+    },[listas,onOk]);
 
     return (
         <>

@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import { Modal, Form,Input,Radio,Button,Space} from 'antd';
 import {DeleteOutlined,PlusOutlined} from '@ant-design/icons';
+import FileBase from 'react-file-base64';
 
 const {TextArea} = Input;
 
@@ -50,7 +51,9 @@ const EditProductModal = ({
           .validateFields()
           .then(values => {
             values._id=initialValues._id;
-            values.imgSrc=initialValues.imgSrc;
+            if (!values.imgSrc){
+                values.imgSrc=initialValues.imgSrc;
+            }
             values.options=initialValues.options;
             form.resetFields();
             onOk(values);
@@ -73,6 +76,17 @@ const EditProductModal = ({
                 <Input />
             </Form.Item>
             
+            <Form.Item
+            name="imgSrc"
+            label="Imagem do produto"
+            >
+                <FileBase
+                type='file'
+                multiple={false}
+                onDone={({base64})=>{form.setFieldsValue({imgSrc:base64})}}
+                />
+            </Form.Item>
+
             <Form.Item
             name="desc"
             label="Descrição"

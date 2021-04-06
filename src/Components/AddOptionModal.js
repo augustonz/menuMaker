@@ -17,16 +17,18 @@ const AddOptionModal = (
         setListaSelec(changeValues);
     }
 
-    useEffect(async()=>{
-        if (visible){
-            setListaOpcoes(await myContext.getOpcoes());
-            setLoading(false);
-            setListaSelec(selectedIds);
-        } else {
-            setListaSelec([]);
+    useEffect(()=>{
+        async function init() {
+            if (visible){
+                setListaOpcoes(await myContext.getOpcoes());
+                setLoading(false);
+                setListaSelec(selectedIds);
+            } else {
+                setListaSelec([]);
+            }
         }
-
-    },[visible])
+        init();
+    },[visible,myContext,selectedIds]);
     return (
         <>
             <Modal

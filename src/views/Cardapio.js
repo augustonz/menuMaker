@@ -18,11 +18,6 @@ const Cardapio = () => {
   const [groupsList,setGroupsList] = useState(null);
   const [opcoesList,setOpcoesList] = useState(null);
 
-  useEffect(async()=>{
-    refreshGroupList();
-    refreshOpcoesList();
-  },[]);
-
   const refreshGroupList = async() => {
     setLoading(true);
     const grupos = await myContext.getMenu();
@@ -49,6 +44,14 @@ const Cardapio = () => {
     setOpcoesList(opcoes);
     setLoading2(false);
   }
+
+  useEffect(()=>{
+    async function init() {
+      refreshGroupList();
+      refreshOpcoesList();
+    }
+    init();
+  },[]);
 
   return(
     <>

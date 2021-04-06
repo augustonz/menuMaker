@@ -1,11 +1,11 @@
 import React,{useEffect,useState,useContext} from 'react';
-import {Layout,Row,Col,Divider,Button, Affix,Checkbox,message,Spin} from 'antd';
+import {Layout,Row,Col,Divider,Button, Affix,Checkbox,message,Spin,Image} from 'antd';
 import {LeftOutlined,RightOutlined} from '@ant-design/icons';
 import {useParams,useHistory} from 'react-router-dom';
 import GoBack from '../Components/GoBack';
 import Opcoes from '../Components/Opcoes';
 import {MenuContext} from '../contexts/ThemeContext';
-const {Content}=Layout;
+const {Content,Header}=Layout;
 
 const Detalhes = () =>{
 
@@ -19,9 +19,12 @@ const Detalhes = () =>{
     const [options,setOptions] = useState([]);
 
     useEffect(async ()=>{
-        setProduto(await myContext.getProduto(id));
-        setLoading(false);
-    },[]);
+        async function init() {
+            setProduto(await myContext.getProduto(id));
+            setLoading(false);
+        }
+        init();
+    },[myContext,id]);
 
     function getOptions(lista) {
         let newArr=[];
@@ -36,7 +39,7 @@ const Detalhes = () =>{
     function optionsError(){
         var error = false;
         options.forEach((val,idx)=>{
-            if (val.length===0 && produto.options[idx].req==true){
+            if (val.length===0 && produto.options[idx].req===true){
                 error=true;
                 return;
             }
@@ -67,11 +70,17 @@ const Detalhes = () =>{
 
     return(
         <>
-            <GoBack name='Detalhes do produto'/>
+            <Layout>
+                <Header className='pageHeader'>
+                    <Row style={{height:'15vh',justifyContent:'center'}}>
+                        <Col style={{height:'15vh'}}>
+                            <Image src='/logo.png' width='90px' style={{maxHeight:'15vh'}} preview={false}/>
+                        </Col>
+                    </Row>
+                    <GoBack name='Detalhes do produto'/>
+                </Header>
             {loading ? <div style={{backgroundColor:'white',width:'100%',textAlign:'center',height:'80vh',padding:'35vh 0'}}><Spin size='large'/></div>:
-            <>
-                
-                <Layout>
+                <>
                     <Content style={{backgroundColor:'white',padding:'0 7px'}}>
                         <Row style={{justifyContent:'center'}}>
                             <Col>
@@ -139,8 +148,8 @@ const Detalhes = () =>{
                         </Affix>
                         
                     </Content>
-                </Layout>
-            </>}
+                </>}
+            </Layout>
         </>
         
     )

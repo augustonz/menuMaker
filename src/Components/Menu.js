@@ -1,32 +1,21 @@
-import React,{useState,useEffect,useContext} from 'react';
+import React from 'react';
 import {List,Spin} from 'antd';
 import {useHistory} from 'react-router-dom';
-import {MenuContext} from '../contexts/ThemeContext';
-const Menu = () =>{
-
-    const [lista,setLista] = useState([]);
-    const [loading,setLoading] = useState(true);
-    const myContext = useContext(MenuContext);
-
-    useEffect(async()=>{
-        setLista(await myContext.getMenu());
-        setLoading(false);
-    },[myContext]);
+const Menu = ({MenuList}) =>{
 
     const history=useHistory();
-
     return (
         <>
-            {loading?<div style={{backgroundColor:'white',width:'100%',textAlign:'center',height:'72vh',padding:'35vh 0'}}><Spin size='large'/><br/><h2>Carregando menu...</h2></div>:
-            
-                lista.map((val,index)=>{
+            {MenuList.length==0?<div style={{backgroundColor:'white',width:'100%',textAlign:'center',height:'72vh',padding:'35vh 0'}}><Spin size='large'/><br/><h2>Carregando menu...</h2></div>:
+                
+                MenuList.map((val,index)=>{
 
                     return(
                     <>
                         <List style={{overflowX:'hidden',backgroundColor:'white'}}
                         itemLayout='vertical'
                         header={
-                        <div style={{paddingLeft:'5px'}}>
+                        <div id={val.name} style={{paddingLeft:'5px'}}>
                             <h1>{val.name}</h1>
                         </div>}
                         dataSource={val.products}

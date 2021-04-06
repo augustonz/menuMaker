@@ -5,7 +5,8 @@ export const MenuContext = createContext();
 class MenuContextProvider extends Component{
     state = {
         collapsed:false,
-        url:"https://augustomenumaker.herokuapp.com/",
+        //https://augustomenumaker.herokuapp.com/
+        url:"http://localhost:4000/",
         carrinho: [],
         groupId:3,
         productId:3,
@@ -57,45 +58,66 @@ class MenuContextProvider extends Component{
     }
 
     createGroupHandler = async(values) => {
-        await axios.post(`${this.state.url}grupo/add`,values);
+        await axios.post(`${this.state.url}grupo/add`,values)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
     }
 
     editGroupHandler = async(values) => {
-        await axios.post(`${this.state.url}grupo/update/${values._id}`,values);
+        await axios.post(`${this.state.url}grupo/update/${values._id}`,values)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
     }
 
     deleteGroupHandler = async(id)=>{
-        await axios.delete(`${this.state.url}grupo/${id}`);
+        await axios.delete(`${this.state.url}grupo/${id}`)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
     }
     
     createProductHandler = async(values) => {
-        await axios.post(`${this.state.url}produto/add`,values);
+        await axios.post(`${this.state.url}produto/add`,values)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
+
     }
 
     editProductHandler = async(values) =>{
         await axios.post(`${this.state.url}produto/update/${values._id}`,values)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
     }
 
     delProductHandler = async (grupo,id) => {
-        await axios.delete(`${this.state.url}produto/${id}`);     
-        var index = grupo.products.map(x => {
-            return x._id;
-        }).indexOf(id);
-        grupo.products.splice(index,1);
-        await axios.post(`${this.state.url}grupo/update/${grupo._id}`,grupo);
+        await axios.delete(`${this.state.url}produto/${id}`)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
     }
 
     createOptionHandler = async(option) => {
-        await axios.post(`${this.state.url}opcao/add`,option);
+        await axios.post(`${this.state.url}opcao/add`,option)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
     }
 
     editOptionHandler = async(option)=>{
-        await axios.post(`${this.state.url}opcao/update/${option._id}`,option);
+        await axios.post(`${this.state.url}opcao/update/${option._id}`,option)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
     }
 
     delOptionHandler = async(id)=>{
-        await axios.delete(`${this.state.url}opcao/${id}`);
+        await axios.delete(`${this.state.url}opcao/${id}`)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
     }
+
+    getLojaInfoHandler = async() => {
+        const response = await axios.get(`${this.state.url}loja`);
+        return response.data[0];
+    }
+
+    updateLojaInfoHandler = async(info) => {
+        await axios.post(`${this.state.url}loja/info`,info)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
+    }
+
+    updateLojaHorarioHandler = async(horario) => {
+        await axios.post(`${this.state.url}loja/horario`,horario)
+        .catch(error=>alert("Erro na conexão, tente novamente."));
+    }
+
 
     findOptionsByIdHandler = (Ids) => {
         var list=[];
@@ -175,7 +197,10 @@ class MenuContextProvider extends Component{
             addProdutoCarrinho:this.addProdutoCarrinhoHandler,
             removeProdutoCarrinho:this.removeProdutoCarrinhoHandler,
             getMenu:this.getMenuHandler,
-            getProduto:this.getProdutoHandler}}>
+            getProduto:this.getProdutoHandler,
+            getLojaInfo:this.getLojaInfoHandler,
+            updateLojaInfo:this.updateLojaInfoHandler,
+            updateLojaHorario:this.updateLojaHorarioHandler}}>
                 {this.props.children}
             </MenuContext.Provider>
         );

@@ -25,6 +25,7 @@
 }
 
 .pageHeader {
+    padding-top: 5px;
     background-color: #47b3f7;
     height: 20vh;
 }

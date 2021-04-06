@@ -10,12 +10,16 @@ const EditOptionModal = ({
 }) => {
     
     const [form] = Form.useForm();
+
+    const setInitialValuesForm = () => {
+        form.setFieldsValue({title:initialValues.title});
+        form.setFieldsValue({req:initialValues.req});
+        form.setFieldsValue({max:initialValues.max});
+        form.setFieldsValue({possibil:initialValues.possibil});
+    }
     useEffect(()=>{
         if (visible){
-            form.setFieldsValue({title:initialValues.title});
-            form.setFieldsValue({req:initialValues.req});
-            form.setFieldsValue({max:initialValues.max});
-            form.setFieldsValue({possibil:initialValues.possibil});
+            setInitialValuesForm();
         }
     },[visible]);
 

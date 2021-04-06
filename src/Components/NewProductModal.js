@@ -1,14 +1,11 @@
 import React,{useState} from 'react';
 import { Modal, Form,Input,Radio,Button,Space} from 'antd';
 import {DeleteOutlined,PlusOutlined} from '@ant-design/icons';
+import FileBase from 'react-file-base64';
 
 const {TextArea} = Input;
 
-const NewProductModal = ({
-  visible,
-  onOk,
-  onCancel
-}) => {
+const NewProductModal = ({visible,onOk,onCancel}) => {
 
   const [priceType,setPriceType] = useState(1);
   const [form] = Form.useForm();
@@ -23,7 +20,6 @@ const NewProductModal = ({
         form
           .validateFields()
           .then(values => {
-            values.imgSrc='/placeholder.png'
             values.options=[]
             form.resetFields();
             onOk(values);
@@ -44,6 +40,17 @@ const NewProductModal = ({
             rules={[{ required: true, message: 'Por favor insira o nome do novo produto.' }]}
             >
                 <Input />
+            </Form.Item>
+
+            <Form.Item
+            name="imgSrc"
+            label="Imagem do produto"
+            >
+                <FileBase
+                type='file'
+                multiple={false}
+                onDone={({base64})=>{form.setFieldsValue({imgSrc:base64})}}
+                />
             </Form.Item>
             
             <Form.Item

@@ -11,8 +11,11 @@
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.10.2",
     "axios": "^0.21.1",
+    "moment": "^2.29.1",
     "react": "^17.0.1",
+    "react-anchor-link-smooth-scroll": "^1.0.12",
     "react-dom": "^17.0.1",
+    "react-file-base64": "^1.0.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "web-vitals": "^0.2.4"

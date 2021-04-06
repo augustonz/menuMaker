@@ -52,11 +52,14 @@ const ProdutosList = ({grupo,refreshGroupList,loadingSetter}) =>{
         if (values.desc===undefined){
             values.desc='Descrição vazia'
         }
+        if (values.imgSrc===undefined){
+            values.imgSrc="/placeholder.png";
+        }
         if (values.price || values.price===0){
             values.prices=[{info:'Preço',val:Number(values.price)}];
         } else {
-            for (var i in values.prices){
-                values.prices[i].val=Number(values.prices[i].val);
+            for (var j in values.prices){
+                values.prices[j].val=Number(values.prices[j].val);
             }
         }
         setModalNewVisibility(false);
