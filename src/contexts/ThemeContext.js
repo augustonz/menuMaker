@@ -5,8 +5,9 @@ export const MenuContext = createContext();
 class MenuContextProvider extends Component{
     state = {
         collapsed:false,
+        //http://localhost:4000/
         //https://augustomenumaker.herokuapp.com/
-        url:"http://localhost:4000/",
+        url:"https://augustomenumaker.herokuapp.com/",
         carrinho: [],
         groupId:3,
         productId:3,
