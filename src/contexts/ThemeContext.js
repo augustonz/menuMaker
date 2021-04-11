@@ -119,6 +119,11 @@ class MenuContextProvider extends Component{
         .catch(error=>alert("Erro na conexão, tente novamente."));
     }
 
+    testHandler = async() => {
+        const response= await axios.get(`${this.state.url}test/`);
+        return response.data;
+    }
+
 
     findOptionsByIdHandler = (Ids) => {
         var list=[];
@@ -201,7 +206,8 @@ class MenuContextProvider extends Component{
             getProduto:this.getProdutoHandler,
             getLojaInfo:this.getLojaInfoHandler,
             updateLojaInfo:this.updateLojaInfoHandler,
-            updateLojaHorario:this.updateLojaHorarioHandler}}>
+            updateLojaHorario:this.updateLojaHorarioHandler,
+            test:this.testHandler}}>
                 {this.props.children}
             </MenuContext.Provider>
         );

@@ -1,9 +1,10 @@
 import React,{useContext,useState} from 'react';
-import {Row,Col,Button,Form,Input,Radio} from 'antd'
+import {Row,Col,Button,Form,Input,Radio,Image,Layout} from 'antd'
 import GoBack from '../Components/GoBack';
 import Carrinho from '../Components/Carrinho';
 import {MenuContext} from '../contexts/ThemeContext';
 
+const {Header} = Layout;
 const Pedido = () => {
 
     const [form] = Form.useForm();
@@ -11,6 +12,7 @@ const Pedido = () => {
     const [tipo,setTipo] = useState("");
     const myState=useContext(MenuContext);
     const finishOrder=() => {
+        myState.test();
         form.validateFields()
         .then(values => {
             form.resetFields();
@@ -24,7 +26,17 @@ const Pedido = () => {
     
     return(
         <>
-            <GoBack name='Meu pedido'/>
+            <Layout>
+                <Header className='pageHeader'>
+                        <Row style={{height:'15vh',justifyContent:'center'}}>
+                            <Col style={{height:'15vh'}}>
+                                <Image src='/logo.png' width='90px' style={{maxHeight:'15vh'}} preview={false}/>
+                            </Col>
+                        </Row>
+                        <GoBack name='Meu carrinho'/>
+                </Header>
+            </Layout>
+            
 
             {myState.state.carrinho.length>0?<Carrinho/>:<p>Seu carrinho está vazio no momento, adicione algum produto!</p>}
            
